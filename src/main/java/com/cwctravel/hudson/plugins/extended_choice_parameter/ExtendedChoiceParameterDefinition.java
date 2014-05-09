@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.io.InputStreamReader;
 
 import javax.servlet.ServletException;
 
@@ -33,6 +34,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Property;
+import java.util.Properties;
+import org.apache.tools.ant.BuildException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -271,7 +274,7 @@ public class ExtendedChoiceParameterDefinition extends ParameterDefinition {
 			try {
 
 				Project project = new Project();
-				Property property = new Property();
+				ChineseProperty property = new ChineseProperty();
 				property.setProject(project);
 
 				File propertyFile = new File(propertyFilePath);
@@ -536,5 +539,26 @@ public class ExtendedChoiceParameterDefinition extends ParameterDefinition {
 
 	public Map<String, Boolean> getDefaultValueMap() {
 		return computeDefaultValueMap();
+	}
+
+	public static class ChineseProperty extends Property{
+		@Override
+		protected void  loadUrl(URL url) throws BuildException {
+			Properties props = new Properties();
+			log("Loading " + url, Project.MSG_VERBOSE);
+			try{
+				InputStreamReader isr = new InputStreamReader(url.openStream());
+				try {
+					props.load(isr);
+				} finally {
+					if(isr != null){
+						isr.close();
+					}
+				}
+				addProperties(props);
+			} catch(IOException ex) {
+				throw new BuildException(ex, getLocation());
+			}
+		}
 	}
 }
