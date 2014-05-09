@@ -3,4 +3,5 @@ extended-choice-parameter-plugin
 
 Jenkins extended-choice-parameter plugin
 
-* Use select2 for multiple choice boxes
+* Fixed Chinese character reading problem
+* Use select2 for multiple select input
