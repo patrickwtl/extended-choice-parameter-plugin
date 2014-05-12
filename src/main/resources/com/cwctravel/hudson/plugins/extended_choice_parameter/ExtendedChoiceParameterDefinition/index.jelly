@@ -8,6 +8,31 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
   xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
+  <script type="text/javascript" src="http://ivaynberg.github.io/select2/js/jquery-1.7.1.min.js" ></script>
+  <link href="http://ivaynberg.github.io/select2/select2-3.4.8/select2.css?ts=2014-05-01T06%3A52%3A24-07%3A00" rel="stylesheet"/>
+  <script type="text/javascript" src="http://ivaynberg.github.io/select2/select2-3.4.8/select2.js?ts=2014-05-01T06%3A52%3A24-07%3A00"></script>
+  <script type="text/javascript">
+<![CDATA[
+    jQuery.noConflict();
+    jQuery(document).ready(function($) {
+      var $select2 = $('#select2');
+      $select2.css('min-width','250px');
+      $('<input id="selectAll" type="checkbox"/>全选/取消</input><BR>').insertBefore($select2);
+      $select2.select2();
+      var selectAll = false;
+      $('#selectAll').on('click', function(){
+        if(selectAll){
+          selectAll = false;
+          $('#select2').select2('destroy').find('option').prop('selected', false).end().select2();
+        }else{
+          selectAll = true;
+          $('#select2').select2('destroy').find('option').prop('selected', 'selected').end().select2();
+        }
+      });
+    });
+]]>  
+  </script>
+
   <f:entry title="${it.name}" description="${it.description}">
     <div name="parameter" description="${it.description}">
       <j:set var="type" value="${it.type}"/>
@@ -18,7 +43,7 @@
         </select>
       </j:if>
       <j:if test="${type eq 'PT_MULTI_SELECT'}">
-        <select name="value" multiple="multiple" size="${it.visibleItemCount}">
+        <select id="select2" name="value" multiple="multiple" size="${it.visibleItemCount}">
           <st:include page="selectContent.jelly"/>
         </select>
       </j:if>
